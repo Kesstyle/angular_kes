@@ -32,16 +32,17 @@
                     <th></th>
                     <th>Предмет</th>
                     <th>Цена</th>
-                    <th>Куплено</th>
+                    <th>Куплено<br>
+                        Выбрать все <input type="checkbox" [(checked)]="selectedAll" (change)="changeSelectAllCheckboxState()" /></th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of list.items; let index = index">
+                <tr *ngFor="let item of list.items; let index = index" [class.done]="item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
                     <td><input [(ngModel)]="item.purchase"/></td>
                     <td><input [(ngModel)]="item.price"/></td>
-                    <td><input type="checkbox" ng-model="item.done" /></td>
-                    <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="30" height="30"/></a></td>
+                    <td><input type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item.id)" /></td>
+                    <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20" (click)="removeItem(item.id)"/></a></td>
                 </tr>
             </tbody>
         </table>

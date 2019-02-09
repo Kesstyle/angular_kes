@@ -21,6 +21,8 @@ export class PurchaseComponent implements OnInit {
     ]
 };
 
+  selectedAll = false;
+
   constructor() { }
 
   ngOnInit() {
@@ -43,5 +45,18 @@ export class PurchaseComponent implements OnInit {
 
   removeItem(id: number) {
     this.list.items = this.list.items.filter(item => item.id !== id);
+  }
+
+  changeSelectAllCheckboxState () {
+    this.selectedAll = !this.selectedAll;
+    if (this.selectedAll) {
+        this.list.items.filter(item => !item.done).forEach(item => item.done = true)
+    } else {
+        this.list.items.filter(item => item.done).forEach(item => item.done = false)
+    }
+  }
+
+  changeCheckboxState (id: number) {
+    this.list.items.filter(item => item.id === id).forEach(item => item.done = !item.done);
   }
 }
