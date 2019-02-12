@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
+import { Http } from '@angular/http';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-purchase',
@@ -20,20 +22,21 @@ export class PurchaseComponent implements OnInit {
     hours = [];
     months = [];
 
-  i = 5;
+  i = 10000;
 
-  list = {
-    items: [
-        { id: 1, purchase: "Хлеб", done: false, dateExpire: new Date('Mon Feb 11 2019 20:25:12 GMT+0300') },
-        { id: 2, purchase: "Масло", done: false, dateExpire: new Date('Mon Feb 11 2019 20:23:12 GMT+0300') },
-        { id: 3, purchase: "Картофель", done: true, dateExpire: new Date('Mon Feb 11 2019 20:22:12 GMT+0300') },
-        { id: 4, purchase: 'Сыр', done: false, dateExpire: new Date('2018-05-05T00:00:00') }
-    ]
-};
+//   list = [{
+//     items: [
+//         { id: 1, name: "Хлеб", done: false, dateExpire: new Date('Mon Feb 11 2019 20:25:12 GMT+0300') },
+//         { id: 2, name: "Масло", done: false, dateExpire: new Date('Mon Feb 11 2019 20:23:12 GMT+0300') },
+//         { id: 3, name: "Картофель", done: true, dateExpire: new Date('Mon Feb 11 2019 20:22:12 GMT+0300') },
+//         { id: 4, name: 'Сыр', done: false, dateExpire: new Date('2018-05-05T00:00:00') }
+//     ]]
+// };
+    list: KesEvents;
 
   selectedAll = false;
 
-  constructor() { }
+  constructor(private http: Http) {   }
 
   ngOnInit() {
       for (let i = 1; i <= 31; i++) {
@@ -60,6 +63,13 @@ export class PurchaseComponent implements OnInit {
       this.months.push(new KesMonth(10, "Октябрь"));
       this.months.push(new KesMonth(11, "Ноябрь"));
       this.months.push(new KesMonth(12, "Декабрь"));
+
+      this.list = new KesEvents([new KesEvent(1, 'Хлеб', true, new Date('Mon Feb 11 2019 20:25:12 GMT+0300')),
+                                          new KesEvent(2, 'Масло', false, new Date('Mon Feb 11 2019 20:23:12 GMT+0300')),
+                                          new KesEvent(3, 'Картофель', true, new Date('Mon Feb 11 2019 20:22:12 GMT+0300')),
+                                        new KesEvent(4, 'Сыр', false, new Date('2018-05-05T00:00:00'))]);
+    //  this.list = this.getItems();
+    this.getItems();
   }
 
 //   addItem(text, price) {
@@ -76,7 +86,7 @@ export class PurchaseComponent implements OnInit {
             const finalDateStr = this.dateYearNew + '-' + this.getDateStr(dateMonth) + '-' + this.getDateStr(this.dateDayNew) +
              'T' + this.getDateStr(this.dateHourNew) + ':' + this.getDateStr(this.dateMinuteNew) + ':00';
             const finalDate = new Date(finalDateStr);
-            this.list.items.push({id: this.i, purchase: this.nameNew, dateExpire: finalDate, done: false });
+            this.list.items.push({id: this.i, name: this.nameNew, dateExpire: finalDate, done: false });
             this.i++;
             this.clearAll();
         }
@@ -99,6 +109,16 @@ export class PurchaseComponent implements OnInit {
     this.list.items.filter(item => item.id === id).forEach(item => item.done = !item.done);
   }
 
+  getItems () {
+    this.http.get('http://localhost:8089/api/events').pipe(map((res: Response) => res.json()))
+    .subscribe(data => {
+        for (let i = 0;; i++) {
+           this.list.items.push(new KesEvent(data['items'][i].id, data['items'][i].name,
+              data['items'][i].done, new Date(data['items'][i].dateExpire)));
+        }
+    })
+  }
+
   private getDateStr(date: number) {
     return date < 10 ? '0' + date : date;
   }
@@ -116,4 +136,12 @@ export class PurchaseComponent implements OnInit {
 class KesMonth {
 
     constructor(public id: number, public name: string) {}
+}
+
+class KesEvents {
+    constructor(public items: KesEvent[]) {}
+}
+
+class KesEvent {
+    constructor(public id: number, public name: string, public done: boolean, public dateExpire: Date) {}
 }
