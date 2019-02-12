@@ -8,11 +8,17 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 export class PurchaseComponent implements OnInit {
 
     @Input() nameNew: string;
-    @Input() dateDayNew: string;
-    @Input() dateMonthNew: string;
-    @Input() dateYearNew: string;
-    @Input() dateHourNew: string;
-    @Input() dateMinuteNew: string;
+    @Input() dateDayNew: number;
+    @Input() dateMonthNew: KesMonth;
+    @Input() dateYearNew: number;
+    @Input() dateHourNew: number;
+    @Input() dateMinuteNew: number;
+
+    days = [];
+    years = [];
+    minutes = [];
+    hours = [];
+    months = [];
 
   i = 5;
 
@@ -30,6 +36,30 @@ export class PurchaseComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+      for (let i = 1; i <= 31; i++) {
+        this.days.push(i);
+      }
+      for (let i = 2010; i <= 2040; i++) {
+        this.years.push(i);
+      }
+      for (let i = 0; i <= 59; i++) {
+        this.minutes.push(i);
+      }
+      for (let i = 0; i <= 23; i++) {
+        this.hours.push(i);
+      }
+      this.months.push(new KesMonth(1, "Январь"));
+      this.months.push(new KesMonth(2, "Февраль"));
+      this.months.push(new KesMonth(3, "Март"));
+      this.months.push(new KesMonth(4, "Апрель"));
+      this.months.push(new KesMonth(5, "Май"));
+      this.months.push(new KesMonth(6, "Июнь"));
+      this.months.push(new KesMonth(7, "Июль"));
+      this.months.push(new KesMonth(8, "Август"));
+      this.months.push(new KesMonth(9, "Сентябрь"));
+      this.months.push(new KesMonth(10, "Октябрь"));
+      this.months.push(new KesMonth(11, "Ноябрь"));
+      this.months.push(new KesMonth(12, "Декабрь"));
   }
 
 //   addItem(text, price) {
@@ -40,14 +70,11 @@ export class PurchaseComponent implements OnInit {
 //   }
 
   addItem() {
-        const dateDay = parseInt(this.dateDayNew, 10);
-        const dateMonth = parseInt(this.dateMonthNew, 10);
-        const dateYear = parseInt(this.dateYearNew, 10);
-        const dateHour = parseInt(this.dateHourNew, 10);
-        const dateMinute = parseInt(this.dateMinuteNew, 10);
-        if (this.nameNew !== '' && !isNaN(dateDay) && !isNaN(dateMonth) && !isNaN(dateYear)) {
-            const finalDateStr = dateYear + '-' + this.getDateStr(dateMonth) + '-' + this.getDateStr(dateDay) +
-             'T' + this.getDateStr(dateHour) + ':' + this.getDateStr(dateMinute) + ':00';
+        const dateMonth = this.dateMonthNew.id;
+        if (this.nameNew !== '' && !isNaN(dateMonth) && !isNaN(this.dateYearNew) && !isNaN(dateMonth)
+        && !isNaN(this.dateMinuteNew) && !isNaN(this.dateHourNew)) {
+            const finalDateStr = this.dateYearNew + '-' + this.getDateStr(dateMonth) + '-' + this.getDateStr(this.dateDayNew) +
+             'T' + this.getDateStr(this.dateHourNew) + ':' + this.getDateStr(this.dateMinuteNew) + ':00';
             const finalDate = new Date(finalDateStr);
             this.list.items.push({id: this.i, purchase: this.nameNew, dateExpire: finalDate, done: false });
             this.i++;
@@ -77,11 +104,16 @@ export class PurchaseComponent implements OnInit {
   }
 
   private clearAll() {
-    this.dateDayNew = '';
-    this.dateYearNew = '';
-    this.dateMonthNew = '';
-    this.dateHourNew = '';
-    this.dateMinuteNew = '';
+    this.dateDayNew = null;
+    this.dateYearNew = null;
+    this.dateMonthNew = null;
+    this.dateHourNew = null;
+    this.dateMinuteNew = null;
     this.nameNew = '';
   }
+}
+
+class KesMonth {
+
+    constructor(public id: number, public name: string) {}
 }

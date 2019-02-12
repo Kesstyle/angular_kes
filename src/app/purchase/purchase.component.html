@@ -16,25 +16,51 @@
                 </div>
             </div>
             <br/>
-            <div class="form-group" style="margin: 3mm">
+            <div class="form-group col-md-8" style="margin: 3mm; width: 50%">
                 <div class="col-md-2">
-                    <input type="number" class="form-control" [(ngModel)]="dateDayNew" placeholder="Число"/>
+                    <label>День: </label>
+                    <select [(ngModel)]="dateDayNew" class="selectMargined">
+                        <option>День</option>
+                        <option *ngFor="let day of days" [ngValue]="day">{{day}}</option>
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" [(ngModel)]="dateMonthNew" placeholder="Месяц"/>
+                <div class="col-md-3">
+                    <label>Месяц: </label>
+                    <select [(ngModel)]="dateMonthNew" class="selectMargined">
+                        <option *ngFor="let month of months" [ngValue]="month">{{month.name}}</option>
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" [(ngModel)]="dateYearNew" placeholder="Год"/>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" [(ngModel)]="dateHourNew" placeholder="Час"/>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" [(ngModel)]="dateMinuteNew" placeholder="Минута"/>
+                <div class="col-md-4">
+                    <label>Год: </label>
+                    <select [(ngModel)]="dateYearNew" class="selectMargined">
+                        <option>Год</option>
+                        <option *ngFor="let year of years" [ngValue]="year">{{year}}</option>
+                    </select>
                 </div>
             </div>
-            <div class="form-group" style="margin: 1mm">
-                <div class="col-md-offset-2 col-md-8">
+            <br/>
+            <div class="form-group col-md-10" style="margin: 3mm">
+                <div class="col-md-1">
+                    <label>Час: </label>
+                    <select [(ngModel)]="dateHourNew" class="selectMargined">
+                        <option>Час</option>
+                        <option *ngFor="let hour of hours" [ngValue]="hour">{{hour}}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Минута: </label>
+                    <select [(ngModel)]="dateMinuteNew" class="selectMargined">
+                        <option>Минута</option>
+                        <option *ngFor="let minute of minutes" [ngValue]="minute">{{minute}}</option>
+                    </select>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div class="form-group" style="margin: 3mm">
+                <div class="col-md-8">
                     <button class="btn btn-default" (click)="addItem()">Добавить</button>
                 </div>
             </div>

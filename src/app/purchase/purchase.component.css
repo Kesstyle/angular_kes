@@ -4,3 +4,8 @@ tr.done:nth-child(odd) {
 tr.done:nth-child(even) {
     background-color: #0d0
 }
+
+select.selectMargined {
+    margin-right: 2mm;
+    margin-left: 2mm;
+}
