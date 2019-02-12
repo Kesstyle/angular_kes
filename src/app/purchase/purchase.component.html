@@ -10,17 +10,30 @@
     </div>
     <div class="panel">
         <div class="form-inline">
-            <div class="form-group">
+            <div class="form-group" style="margin: 3mm">
                 <div class="col-md-8">
-                    <input class="form-control" [(ngModel)]="nameNew" placeholder = "Название" />
+                    <input class="form-control" [(ngModel)]="nameNew" placeholder = "Описание события" />
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-6">
-                    <input type="number" class="form-control" [(ngModel)]="priceNew" placeholder="Цена" />
+            <br/>
+            <div class="form-group" style="margin: 3mm">
+                <div class="col-md-2">
+                    <input type="number" class="form-control" [(ngModel)]="dateDayNew" placeholder="Число"/>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" [(ngModel)]="dateMonthNew" placeholder="Месяц"/>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" [(ngModel)]="dateYearNew" placeholder="Год"/>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" [(ngModel)]="dateHourNew" placeholder="Час"/>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" [(ngModel)]="dateMinuteNew" placeholder="Минута"/>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin: 1mm">
                 <div class="col-md-offset-2 col-md-8">
                     <button class="btn btn-default" (click)="addItem()">Добавить</button>
                 </div>
@@ -40,7 +53,7 @@
                 <tr *ngFor="let item of list.items; let index = index" [class.done]="item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
                     <td><input [(ngModel)]="item.purchase"/></td>
-                    <td><input [(ngModel)]="item.price"/></td>
+                    <td>{{item.dateExpire | date: 'dd MMM yyyy HH:mm'}}</td>
                     <td><input type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item.id)" /></td>
                     <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20" (click)="removeItem(item.id)"/></a></td>
                 </tr>
