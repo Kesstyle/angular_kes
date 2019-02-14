@@ -6,12 +6,14 @@ import { HttpModule } from '@angular/http'
 import { AppRoutingModule } from './app-routing/app-routing.module';
 
 import { AppComponent } from './app.component';
-import { PurchaseComponent } from './purchase/purchase.component';
+import { EventsComponent } from './events/events.component';
+
+import { EventsService } from './events/service/events.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PurchaseComponent
+    EventsComponent
   ],
   imports: [
     BrowserModule,
@@ -19,7 +21,7 @@ import { PurchaseComponent } from './purchase/purchase.component';
     FormsModule,
     HttpModule
   ],
-  providers: [],
+  providers: [EventsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
