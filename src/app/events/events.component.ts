@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { KesEvents } from './model/kesevents.model';
+import { KesEvents, KesEvent } from './model/';
 import { EventsService } from './service/events.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-events',
@@ -32,7 +33,7 @@ export class EventsComponent implements OnInit {
 //         { id: 4, name: 'Сыр', done: false, dateExpire: new Date('2018-05-05T00:00:00') }
 //     ]]
 // };
-    list: KesEvents;
+    list: Observable<KesEvent[]>;
 
   selectedAll = false;
 
@@ -64,7 +65,6 @@ export class EventsComponent implements OnInit {
       this.months.push(new KesMonth(11, "Ноябрь"));
       this.months.push(new KesMonth(12, "Декабрь"));
 
-      this.list = new KesEvents([]);
       this.getItems();
   }
 
@@ -75,32 +75,31 @@ export class EventsComponent implements OnInit {
             const finalDateStr = this.dateYearNew + '-' + this.getDateStr(dateMonth) + '-' + this.getDateStr(this.dateDayNew) +
              'T' + this.getDateStr(this.dateHourNew) + ':' + this.getDateStr(this.dateMinuteNew) + ':00';
             const finalDate = new Date(finalDateStr);
-            this.list.items.push({id: this.i, name: this.nameNew, dateExpire: finalDate, done: false });
+            this.eventsService.addItemWithBody({id: this.i, name: this.nameNew, dateExpire: finalDate, done: false });
             this.i++;
             this.clearAll();
         }
   }
 
-  removeItem(id: number) {
-    this.list.items = this.list.items.filter(item => item.id !== id);
-  }
+//   removeItem(id: number) {
+//     this.list.items = this.list.items.filter(item => item.id !== id);
+//   }
 
-  changeSelectAllCheckboxState () {
-    this.selectedAll = !this.selectedAll;
-    if (this.selectedAll) {
-        this.list.items.filter(item => !item.done).forEach(item => item.done = true)
-    } else {
-        this.list.items.filter(item => item.done).forEach(item => item.done = false)
-    }
-  }
+//   changeSelectAllCheckboxState () {
+//     this.selectedAll = !this.selectedAll;
+//     if (this.selectedAll) {
+//         this.list.items.filter(item => !item.done).forEach(item => item.done = true)
+//     } else {
+//         this.list.items.filter(item => item.done).forEach(item => item.done = false)
+//     }
+//   }
 
-  changeCheckboxState (id: number) {
-    this.list.items.filter(item => item.id === id).forEach(item => item.done = !item.done);
-  }
+//   changeCheckboxState (id: number) {
+//     this.list.items.filter(item => item.id === id).forEach(item => item.done = !item.done);
+//   }
 
   getItems () {
-    const kesEvents = this.eventsService.getItems();
-    this.list.items = kesEvents;
+    this.list = this.eventsService.getItemsObservable();
   }
 
   private getDateStr(date: number) {
