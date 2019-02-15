@@ -12,39 +12,38 @@ export class EventsService {
 
   constructor(private http: Http, private zone: NgZone) {   }
 
-  getItems () {
-    const kesEvents = new Array<KesEvent>();
-    this.http.get('${this.baseUrl}event').pipe(map((res: Response) => res.json()))
-    .subscribe(data => {
-        for (let i = 0;; i++) {
-            if (data['items'][i] === undefined) {
-                break;
-            }
-           kesEvents.push(new KesEvent(data['items'][i].id, data['items'][i].name,
-              data['items'][i].done, new Date(data['items'][i].dateExpire)));
-        }
-    });
-    return kesEvents;
-  }
-
   addItem (event: KesEvent) {
     const body = {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done};
     return this.addItemWithBody(body);
   }
 
   addItemWithBody (body: any) {
-    console.log('Trying to add item...');
-    const headers = new Headers();
-    headers.append('Access-Control-Allow-Method', `*`);
-    headers.append('Access-Control-Allow-Origin', '*');
-    headers.append('Access-Control-Allow-Headers', `*`);
-    headers.append('Access-Control-Max-Age', `*`);
-    headers.append('Content-type', `application/json`);
-    const options = new RequestOptions({ headers: headers });
-    return this.http.post('http://localhost:8089/api/event', JSON.stringify(body), options)
-        .pipe(map((res: Response) => res.json())).subscribe(data => {
-        console.log('Okay, we added ' + data);
+    return this.http.post(`${this.baseUrl}` + 'event', body, this.getCorsOptions())
+        .subscribe(data => console.log('Okay, we added: ' + data));
+  }
+
+  updateItem (event: KesEvent) {
+    const body = {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done};
+    return this.updateItemWithBody(body);
+  }
+
+  updateItems (events: KesEvent[]) {
+    let body = '[';
+    events.forEach(event => {
+        body = body + ',' + {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done};
     });
+    body = body + ']';
+    return this.updateItemWithBody(body);
+  }
+
+  updateItemWithBody (body: any) {
+    return this.http.put(`${this.baseUrl}` + 'event', body, this.getCorsJsonOptions())
+        .subscribe(data => console.log('Okay, we updated: ' + data));
+  }
+
+  removeItem (id: string) {
+    return this.http.delete(`${this.baseUrl}` + 'event/' + id, this.getCorsOptions())
+        .subscribe(data => console.log('Deleted: ' + data));
   }
 
 
@@ -57,8 +56,23 @@ export class EventsService {
       eventSource.onmessage = (event) =>
         this.zone.run(() => {
           const json = JSON.parse(event.data);
-          this.eventsList.push(new KesEvent(json['id'], json['name'],
-              json['done'], new Date(json['dateExpire'])));
+          let id: string = json['id'];
+            if (id.startsWith('--')) {
+                id = id.replace('--', '');
+                this.eventsList = this.eventsList.filter(e => {
+                    return e.id !== id;
+                });
+            } else if (id.startsWith('*')) {
+                id = id.replace('*', '');
+                this.eventsList.filter(e => e.id === id).forEach(e => {
+                    e.name = json['name'];
+                    e.done = json['done'];
+                    e.dateExpire = json['dateExpire'];
+                });
+            } else {
+                this.eventsList.push(new KesEvent(json['id'], json['name'],
+                    json['done'], new Date(json['dateExpire'])));
+            }
           observer.next(this.eventsList);
         });
       eventSource.onerror = (error) => observer.error('eventSource.onerror: ' + error);
@@ -66,4 +80,16 @@ export class EventsService {
     });
     }
 
+    private getCorsOptions() {
+        const headers = new Headers();
+        headers.append('Access-Control-Max-Age', `*`);
+        return new RequestOptions({ headers: headers });
+    }
+
+    private getCorsJsonOptions() {
+        const headers = new Headers();
+        headers.append('Access-Control-Max-Age', `*`);
+        headers.append('Content-type', 'application/json');
+        return new RequestOptions({ headers: headers });
+    }
 }

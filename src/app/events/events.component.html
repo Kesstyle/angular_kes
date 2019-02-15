@@ -6,7 +6,7 @@
 </head>
 <body ng-controller="purchaseController">
     <div class="page-header">
-        <h1> Список покупок </h1>
+        <h1> Список событий </h1>
     </div>
     <div class="panel">
         <div class="form-inline">
@@ -69,21 +69,19 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>Предмет</th>
-                    <th>Цена</th>
-                    <!-- <th>Куплено<br>
-                        Выбрать все <input type="checkbox" [(checked)]="selectedAll" (change)="changeSelectAllCheckboxState()" /></th> -->
+                    <th>Событие</th>
+                    <th>Ожидаемая дата</th>
+                    <th>Произошло?<br>
+                        Выбрать все <input type="checkbox" [(checked)]="selectedAll" (change)="changeSelectAllCheckboxState()" /></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let item of list | async; let index = index" [class.done]="item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
-                    <td><input [(ngModel)]="item.name"/></td>
+                    <td><input [(ngModel)]="item.name" (change)="updateItem(item)"/></td>
                     <td>{{item.dateExpire | date: 'dd MMM yyyy HH:mm'}}</td>
-                    <!-- <td><input type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item.id)" /></td> -->
-                    <td><input type="checkbox" [(checked)]="item.done" /></td>
-                    <!-- <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20" (click)="removeItem(item.id)"/></a></td> -->
-                    <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20"/></a></td>
+                    <td><input #donecheckbox type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item)" /></td>
+                    <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20" (click)="removeItem(item.id)"/></a></td>
                 </tr>
             </tbody>
         </table>

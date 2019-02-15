@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { KesEvents, KesEvent } from './model/';
+import { Component, OnInit, Input, Output, ViewChild, ElementRef, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
+import { KesEvent } from './model/';
 import { EventsService } from './service/events.service';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })
-export class EventsComponent implements OnInit {
+export class EventsComponent implements OnInit, AfterViewInit {
 
     @Input() nameNew: string;
     @Input() dateDayNew: number;
@@ -17,22 +17,14 @@ export class EventsComponent implements OnInit {
     @Input() dateHourNew: number;
     @Input() dateMinuteNew: number;
 
+    @ViewChildren('donecheckbox') doneCheckbox: QueryList<ElementRef>;
+
     days = [];
     years = [];
     minutes = [];
     hours = [];
     months = [];
 
-  i = 10000;
-
-//   list = [{
-//     items: [
-//         { id: 1, name: "Хлеб", done: false, dateExpire: new Date('Mon Feb 11 2019 20:25:12 GMT+0300') },
-//         { id: 2, name: "Масло", done: false, dateExpire: new Date('Mon Feb 11 2019 20:23:12 GMT+0300') },
-//         { id: 3, name: "Картофель", done: true, dateExpire: new Date('Mon Feb 11 2019 20:22:12 GMT+0300') },
-//         { id: 4, name: 'Сыр', done: false, dateExpire: new Date('2018-05-05T00:00:00') }
-//     ]]
-// };
     list: Observable<KesEvent[]>;
 
   selectedAll = false;
@@ -68,6 +60,8 @@ export class EventsComponent implements OnInit {
       this.getItems();
   }
 
+  ngAfterViewInit() { }
+
   addItem() {
         const dateMonth = this.dateMonthNew.id;
         if (this.nameNew !== '' && !isNaN(dateMonth) && !isNaN(this.dateYearNew) && !isNaN(dateMonth)
@@ -75,28 +69,29 @@ export class EventsComponent implements OnInit {
             const finalDateStr = this.dateYearNew + '-' + this.getDateStr(dateMonth) + '-' + this.getDateStr(this.dateDayNew) +
              'T' + this.getDateStr(this.dateHourNew) + ':' + this.getDateStr(this.dateMinuteNew) + ':00';
             const finalDate = new Date(finalDateStr);
-            this.eventsService.addItemWithBody({id: this.i, name: this.nameNew, dateExpire: finalDate, done: false });
-            this.i++;
+            this.eventsService.addItemWithBody({name: this.nameNew, dateExpire: finalDate, done: false });
             this.clearAll();
         }
   }
 
-//   removeItem(id: number) {
-//     this.list.items = this.list.items.filter(item => item.id !== id);
-//   }
+  updateItem(item: KesEvent) {
+      this.eventsService.updateItem(item);
+  }
 
-//   changeSelectAllCheckboxState () {
-//     this.selectedAll = !this.selectedAll;
-//     if (this.selectedAll) {
-//         this.list.items.filter(item => !item.done).forEach(item => item.done = true)
-//     } else {
-//         this.list.items.filter(item => item.done).forEach(item => item.done = false)
-//     }
-//   }
+  removeItem(id: string) {
+    this.eventsService.removeItem(id);
+  }
 
-//   changeCheckboxState (id: number) {
-//     this.list.items.filter(item => item.id === id).forEach(item => item.done = !item.done);
-//   }
+  changeSelectAllCheckboxState () {
+    this.selectedAll = !this.selectedAll;
+    this.doneCheckbox.map(cb => <HTMLInputElement>cb.nativeElement).filter(cb => cb.checked !== this.selectedAll)
+    .forEach(cb => cb.click());
+  }
+
+  changeCheckboxState (item: KesEvent) {
+    item.done = !item.done;
+    this.updateItem(item);
+  }
 
   getItems () {
     this.list = this.eventsService.getItemsObservable();
