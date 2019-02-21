@@ -19,10 +19,8 @@
             <div class="form-group col-md-8" style="margin: 3mm; width: 50%">
                 <div class="col-md-2">
                     <label>День: </label>
-                    <select [(ngModel)]="dateDayNew" class="selectMargined">
-                        <option>День</option>
-                        <option *ngFor="let day of days" [ngValue]="day">{{day}}</option>
-                    </select>
+                    <input type="number" [(ngModel)]="dateDayNew" class="inputMargined day" [range]="[1,31]" name="newDay" #newDay="ngModel"/>
+                    <p style="color: red; font-weight:bold;" *ngIf="newDay.errors?.range">От 1 до 31!</p>
                 </div>
                 <div class="col-md-3">
                     <label>Месяц: </label>
@@ -32,34 +30,28 @@
                 </div>
                 <div class="col-md-4">
                     <label>Год: </label>
-                    <select [(ngModel)]="dateYearNew" class="selectMargined">
-                        <option>Год</option>
-                        <option *ngFor="let year of years" [ngValue]="year">{{year}}</option>
-                    </select>
+                    <input type="number" [(ngModel)]="dateYearNew" class="inputMargined year" [range]="[1900,2100]" name="newYear" #newYear="ngModel"/>
+                    <p style="color: red; font-weight:bold;" *ngIf="newYear.errors?.range">От 1900 до 2100!</p>
                 </div>
             </div>
             <br/>
             <div class="form-group col-md-10" style="margin: 3mm">
                 <div class="col-md-1">
                     <label>Час: </label>
-                    <select [(ngModel)]="dateHourNew" class="selectMargined">
-                        <option>Час</option>
-                        <option *ngFor="let hour of hours" [ngValue]="hour">{{hour}}</option>
-                    </select>
+                    <input type="number" [(ngModel)]="dateHourNew" class="inputMargined hour" [range]="[0,23]" name="newHour" #newHour="ngModel"/>
+                    <p style="color: red; font-weight:bold;" *ngIf="newHour.errors?.range">От 0 до 23!</p>
                 </div>
                 <div class="col-md-2">
                     <label>Минута: </label>
-                    <select [(ngModel)]="dateMinuteNew" class="selectMargined">
-                        <option>Минута</option>
-                        <option *ngFor="let minute of minutes" [ngValue]="minute">{{minute}}</option>
-                    </select>
+                    <input type="number" [(ngModel)]="dateMinuteNew" class="inputMargined minute" [range]="[0,59]" name="newMinute" #newMinute="ngModel"/>
+                    <p style="color: red; font-weight:bold;" *ngIf="newMinute.errors?.range">От 0 до 59!</p>
                 </div>
             </div>
             <br/>
             <br/>
             <br/>
             <br/>
-            <div class="form-group" style="margin: 3mm">
+            <div class="form-group col-md-10" style="margin: 3mm">
                 <div class="col-md-8">
                     <button class="btn btn-default" (click)="addItem()">Добавить</button>
                 </div>
@@ -78,7 +70,7 @@
             <tbody>
                 <tr *ngFor="let item of list | async; let index = index" [class.done]="item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
-                    <td><input [(ngModel)]="item.name" (change)="updateItem(item)"/></td>
+                    <td><textarea cols="40" rows="3" [(ngModel)]="item.name" (change)="updateItem(item)"></textarea></td>
                     <td>{{item.dateExpire | date: 'dd MMM yyyy HH:mm'}}</td>
                     <td><input #donecheckbox type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item)" /></td>
                     <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20" (click)="removeItem(item.id)"/></a></td>

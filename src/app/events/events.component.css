@@ -9,3 +9,24 @@ select.selectMargined {
     margin-right: 2mm;
     margin-left: 2mm;
 }
+
+input.inputMargined {
+    margin-right: 2mm;
+    margin-left: 2mm;
+}
+
+input.day {
+    width: 30%;
+}
+
+input.hour {
+    width: 40%;
+}
+
+input.minute {
+    width: 20%;
+}
+
+input.year {
+    width: 20%;
+}

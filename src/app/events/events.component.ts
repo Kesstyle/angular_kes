@@ -19,10 +19,6 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
     @ViewChildren('donecheckbox') doneCheckbox: QueryList<ElementRef>;
 
-    days = [];
-    years = [];
-    minutes = [];
-    hours = [];
     months = [];
 
     list: Observable<KesEvent[]>;
@@ -32,18 +28,6 @@ export class EventsComponent implements OnInit, AfterViewInit {
   constructor(private eventsService: EventsService) {   }
 
   ngOnInit() {
-      for (let i = 1; i <= 31; i++) {
-        this.days.push(i);
-      }
-      for (let i = 2010; i <= 2040; i++) {
-        this.years.push(i);
-      }
-      for (let i = 0; i <= 59; i++) {
-        this.minutes.push(i);
-      }
-      for (let i = 0; i <= 23; i++) {
-        this.hours.push(i);
-      }
       this.months.push(new KesMonth(1, "Январь"));
       this.months.push(new KesMonth(2, "Февраль"));
       this.months.push(new KesMonth(3, "Март"));
@@ -56,6 +40,8 @@ export class EventsComponent implements OnInit, AfterViewInit {
       this.months.push(new KesMonth(10, "Октябрь"));
       this.months.push(new KesMonth(11, "Ноябрь"));
       this.months.push(new KesMonth(12, "Декабрь"));
+
+      this.refreshAddFormDate();
 
       this.getItems();
   }
@@ -102,12 +88,17 @@ export class EventsComponent implements OnInit, AfterViewInit {
   }
 
   private clearAll() {
-    this.dateDayNew = null;
-    this.dateYearNew = null;
-    this.dateMonthNew = null;
-    this.dateHourNew = null;
-    this.dateMinuteNew = null;
+    this.refreshAddFormDate();
     this.nameNew = '';
+  }
+
+  private refreshAddFormDate() {
+      const today = new Date();
+      this.dateDayNew = today.getDate();
+      this.dateYearNew = today.getFullYear();
+      this.dateHourNew = today.getHours();
+      this.dateMinuteNew = today.getMinutes();
+      this.dateMonthNew = this.months[today.getMonth()];
   }
 }
 

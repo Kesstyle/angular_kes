@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { EventsComponent } from './events/events.component';
 
 import { EventsService } from './events/service/events.service';
+import { CustomFormsModule } from 'ng2-validation';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { EventsService } from './events/service/events.service';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    CustomFormsModule
   ],
   providers: [EventsService],
   bootstrap: [AppComponent]
