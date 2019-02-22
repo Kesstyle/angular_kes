@@ -1,6 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
-import { map } from 'rxjs/operators';
 import { KesEvent } from './../model/kesevent.model';
 import { Observable } from 'rxjs';
 
@@ -9,6 +8,7 @@ export class EventsService {
 
   baseUrl = 'http://localhost:8089/api/';
   private eventsList: KesEvent[] = new Array();
+  private offset = new Date().getTimezoneOffset() / 60;
 
   constructor(private http: Http, private zone: NgZone) {   }
 
@@ -23,14 +23,19 @@ export class EventsService {
   }
 
   updateItem (event: KesEvent) {
-    const body = {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done};
+    const dateToSet = event.dateExpire;
+    console.log(dateToSet);
+    dateToSet.setHours(dateToSet.getHours() - this.offset);
+    const body = {id: event.id, name: event.name, dateExpire: dateToSet, done: event.done};
     return this.updateItemWithBody(body);
   }
 
   updateItems (events: KesEvent[]) {
     let body = '[';
     events.forEach(event => {
-        body = body + ',' + {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done};
+        const dateToSet = event.dateExpire;
+        dateToSet.setHours(dateToSet.getHours() - this.offset);
+        body = body + ',' + {id: event.id, name: event.name, dateExpire: dateToSet, done: event.done};
     });
     body = body + ']';
     return this.updateItemWithBody(body);
@@ -67,11 +72,15 @@ export class EventsService {
                 this.eventsList.filter(e => e.id === id).forEach(e => {
                     e.name = json['name'];
                     e.done = json['done'];
-                    e.dateExpire = json['dateExpire'];
+                    const dateToSet = new Date(json['dateExpire']);
+                    dateToSet.setHours(dateToSet.getHours() + this.offset);
+                    e.dateExpire = dateToSet;
                 });
             } else {
+                const dateToSet = new Date(json['dateExpire']);
+                dateToSet.setHours(dateToSet.getHours() + this.offset);
                 this.eventsList.push(new KesEvent(json['id'], json['name'],
-                    json['done'], new Date(json['dateExpire'])));
+                    json['done'], dateToSet));
             }
           observer.next(this.eventsList);
         });

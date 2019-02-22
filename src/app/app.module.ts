@@ -10,6 +10,8 @@ import { EventsComponent } from './events/events.component';
 
 import { EventsService } from './events/service/events.service';
 import { CustomFormsModule } from 'ng2-validation';
+import { NgDatepickerModule } from 'ng2-datepicker';
+import { NguiDatetimePickerModule } from '@ngui/datetime-picker';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { CustomFormsModule } from 'ng2-validation';
     AppRoutingModule,
     FormsModule,
     HttpModule,
-    CustomFormsModule
+    CustomFormsModule,
+    NgDatepickerModule,
+    NguiDatetimePickerModule
   ],
   providers: [EventsService],
   bootstrap: [AppComponent]

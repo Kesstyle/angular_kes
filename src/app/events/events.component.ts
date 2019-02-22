@@ -11,15 +11,9 @@ import { Observable } from 'rxjs';
 export class EventsComponent implements OnInit, AfterViewInit {
 
     @Input() nameNew: string;
-    @Input() dateDayNew: number;
-    @Input() dateMonthNew: KesMonth;
-    @Input() dateYearNew: number;
-    @Input() dateHourNew: number;
-    @Input() dateMinuteNew: number;
+    @Input() dateFullNew: Date;
 
     @ViewChildren('donecheckbox') doneCheckbox: QueryList<ElementRef>;
-
-    months = [];
 
     list: Observable<KesEvent[]>;
 
@@ -28,34 +22,16 @@ export class EventsComponent implements OnInit, AfterViewInit {
   constructor(private eventsService: EventsService) {   }
 
   ngOnInit() {
-      this.months.push(new KesMonth(1, "Январь"));
-      this.months.push(new KesMonth(2, "Февраль"));
-      this.months.push(new KesMonth(3, "Март"));
-      this.months.push(new KesMonth(4, "Апрель"));
-      this.months.push(new KesMonth(5, "Май"));
-      this.months.push(new KesMonth(6, "Июнь"));
-      this.months.push(new KesMonth(7, "Июль"));
-      this.months.push(new KesMonth(8, "Август"));
-      this.months.push(new KesMonth(9, "Сентябрь"));
-      this.months.push(new KesMonth(10, "Октябрь"));
-      this.months.push(new KesMonth(11, "Ноябрь"));
-      this.months.push(new KesMonth(12, "Декабрь"));
-
       this.refreshAddFormDate();
-
       this.getItems();
   }
 
   ngAfterViewInit() { }
 
   addItem() {
-        const dateMonth = this.dateMonthNew.id;
-        if (this.nameNew !== '' && !isNaN(dateMonth) && !isNaN(this.dateYearNew) && !isNaN(dateMonth)
-        && !isNaN(this.dateMinuteNew) && !isNaN(this.dateHourNew)) {
-            const finalDateStr = this.dateYearNew + '-' + this.getDateStr(dateMonth) + '-' + this.getDateStr(this.dateDayNew) +
-             'T' + this.getDateStr(this.dateHourNew) + ':' + this.getDateStr(this.dateMinuteNew) + ':00';
-            const finalDate = new Date(finalDateStr);
-            this.eventsService.addItemWithBody({name: this.nameNew, dateExpire: finalDate, done: false });
+        if (this.nameNew !== '') {
+            this.dateFullNew.setHours(this.dateFullNew.getHours() - this.dateFullNew.getTimezoneOffset() / 60);
+            this.eventsService.addItemWithBody({name: this.nameNew, dateExpire: this.dateFullNew, done: false });
             this.clearAll();
         }
   }
@@ -94,16 +70,8 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   private refreshAddFormDate() {
       const today = new Date();
-      this.dateDayNew = today.getDate();
-      this.dateYearNew = today.getFullYear();
-      this.dateHourNew = today.getHours();
-      this.dateMinuteNew = today.getMinutes();
-      this.dateMonthNew = this.months[today.getMonth()];
+      this.dateFullNew = today;
   }
 }
 
-class KesMonth {
-
-    constructor(public id: number, public name: string) {}
-}
 
