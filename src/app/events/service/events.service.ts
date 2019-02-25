@@ -3,6 +3,7 @@ import { Http, RequestOptions, Headers } from '@angular/http';
 import { KesEvent } from './../model/kesevent.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Schedule } from '../model/schedule.model';
 
 @Injectable()
 export class EventsService {
@@ -81,7 +82,7 @@ export class EventsService {
                 const dateToSet = new Date(json['dateExpire']);
                 dateToSet.setHours(dateToSet.getHours() + this.offset);
                 this.eventsList.push(new KesEvent(json['id'], json['name'],
-                    json['done'], dateToSet));
+                    json['done'], dateToSet, new Schedule([])));
             }
           this.eventsList.sort((a, b) => this.eventsComparator(a, b));
           observer.next(this.eventsList);
@@ -98,7 +99,7 @@ export class EventsService {
         if (b.done) {
             return -1;
         }
-        return a.dateExpire < b.dateExpire ? -1 : 1
+        return a.dateExpire < b.dateExpire ? -1 : 1;
     }
 
     private getCorsOptions() {

@@ -18,18 +18,32 @@
                 <div class="col-md-6">
                     <label>Дата события: </label>
                     <input [(ngModel)]="dateFullNew" ngui-datetime-picker [close-on-select]="false"/>
-                </div>           
+                </div>
             </div>
             <br/>
-            <br/>
-            <br/>
+            <div class="form-group col-md-8" style="margin: 3mm">
+                <div class="col-md-2">
+                    <label>Уведомить: </label>
+                    <input [(ngModel)]="dateSchedule" ngui-datetime-picker [close-on-select]="false"/>  
+                </div>
+                <div class="col-md-6" style="margin-top: 6mm">
+                    <a><img src="/assets/images/plus.png" width="20" height="20" (click)="addScheduleDate()"/></a>
+                </div>                 
+            </div>
+            <div class="form-group col-md-6" style="margin: 3mm">
+                <ul>
+                    <li *ngFor="let schDate of listDatesSchedule">
+                        {{schDate | formatDate}}<a><img src="/assets/images/minus.png" width="20" height="20" (click)="removeScheduleDate(schDate)"/></a>
+                    </li>
+                </ul>
+            </div>
             <br/>
             <div class="form-group col-md-10" style="margin: 3mm">
                 <div class="col-md-8">
                     <button class="btn btn-default" (click)="addItem()">Добавить</button>
                 </div>
             </div>  
-        </div>
+        </div>  
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -44,14 +58,12 @@
                 <tr *ngFor="let item of list | async; let index = index" [class.done]="item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
                     <td><textarea cols="40" rows="3" [(ngModel)]="item.name" (change)="updateItem(item)"></textarea></td>
-                    <!-- <td>{{item.dateExpire | date: 'dd MMM yyyy HH:mm'}}</td> -->
                     <td><input [(ngModel)]="item.dateExpire" date-format="y" ngui-datetime-picker [close-on-select]="true"
                        (ngModelChange)="updateItem(item)"/>
-                    <!-- {{item.dateExpire | date: 'dd MMM yyyy HH:mm'}} -->
                     {{ item.dateExpire | formatDate }}
                     </td>
                     <td><input #donecheckbox type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item)" /></td>
-                    <td><a><img src="http://www.blackbox.sg/assets/img/image_1489397325png" width="20" height="20" (click)="removeItem(item.id)"/></a></td>
+                    <td><a><img src="/assets/images/cross.png" width="20" height="20" (click)="removeItem(item.id)"/></a></td>
                 </tr>
             </tbody>
         </table>

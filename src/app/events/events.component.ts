@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, ViewChild, ElementRef, ViewChildren, 
 import { KesEvent } from './model/';
 import { EventsService } from './service/events.service';
 import { Observable } from 'rxjs';
+import { Schedule } from './model/schedule.model';
 
 @Component({
   selector: 'app-events',
@@ -12,6 +13,9 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
     @Input() nameNew: string;
     @Input() dateFullNew: Date;
+    @Input() dateSchedule: Date;
+
+    listDatesSchedule: Date[] = [];
 
     @ViewChildren('donecheckbox') doneCheckbox: QueryList<ElementRef>;
 
@@ -31,7 +35,8 @@ export class EventsComponent implements OnInit, AfterViewInit {
   addItem() {
         if (this.nameNew !== '') {
             this.dateFullNew.setHours(this.dateFullNew.getHours() - this.dateFullNew.getTimezoneOffset() / 60);
-            this.eventsService.addItemWithBody({name: this.nameNew, dateExpire: this.dateFullNew, done: false });
+            this.eventsService.addItemWithBody({name: this.nameNew, dateExpire: this.dateFullNew, done: false,
+              schedule: new Schedule(this.listDatesSchedule) });
             this.clearAll();
         }
   }
@@ -59,6 +64,28 @@ export class EventsComponent implements OnInit, AfterViewInit {
     this.list = this.eventsService.getItemsObservable();
   }
 
+  addScheduleDate () {
+    if (this.listDatesSchedule.filter(d => this.compareDatesPrecisionMinutes(d, this.dateSchedule)).length === 0) {
+        this.listDatesSchedule.push(this.dateSchedule);
+        const today = new Date();
+        today.setHours(today.getHours() + 1);
+        this.dateSchedule = today;
+   }
+  }
+
+  removeScheduleDate (date: Date) {
+    this.listDatesSchedule = this.listDatesSchedule.filter(d => !this.compareDatesPrecisionMinutes(d, date));
+  }
+
+  private compareDatesPrecisionMinutes(date1: Date, date2: Date) {
+    console.log(date1 + ' vs ' + date2);
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate() &&
+           date1.getHours() === date2.getHours() &&
+           date1.getMinutes() === date2.getMinutes();
+  }
+
   private getDateStr(date: number) {
     return date < 10 ? '0' + date : date;
   }
@@ -66,11 +93,14 @@ export class EventsComponent implements OnInit, AfterViewInit {
   private clearAll() {
     this.refreshAddFormDate();
     this.nameNew = '';
+    this.listDatesSchedule = [];
   }
 
   private refreshAddFormDate() {
       const today = new Date();
       this.dateFullNew = today;
+      today.setHours(today.getHours() + 1);
+      this.dateSchedule = today;
   }
 }
 
