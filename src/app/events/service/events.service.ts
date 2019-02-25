@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class EventsService {
 
-  baseUrl = 'http://localhost:8089/api/';
+  baseUrl = 'http://192.168.0.104:8089/api/';
   private eventsList: KesEvent[] = new Array();
   private offset = new Date().getTimezoneOffset() / 60;
 
@@ -82,11 +82,22 @@ export class EventsService {
                 this.eventsList.push(new KesEvent(json['id'], json['name'],
                     json['done'], dateToSet));
             }
+          this.eventsList.sort((a, b) => this.eventsComparator(a, b));
           observer.next(this.eventsList);
         });
       eventSource.onerror = (error) => observer.error('eventSource.onerror: ' + error);
       return () => eventSource.close();
     });
+    }
+
+    private eventsComparator(a: KesEvent , b: KesEvent) {
+        if (a.done) {
+            return 1;
+        }
+        if (b.done) {
+            return -1;
+        }
+        return a.dateExpire < b.dateExpire ? -1 : 1
     }
 
     private getCorsOptions() {

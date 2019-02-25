@@ -12,11 +12,14 @@ import { EventsService } from './events/service/events.service';
 import { CustomFormsModule } from 'ng2-validation';
 import { NgDatepickerModule } from 'ng2-datepicker';
 import { NguiDatetimePickerModule } from '@ngui/datetime-picker';
+import { DatePipe } from './events/events.pipe';
+import * as moment from 'moment';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EventsComponent
+    EventsComponent,
+    DatePipe
   ],
   imports: [
     BrowserModule,
@@ -28,6 +31,6 @@ import { NguiDatetimePickerModule } from '@ngui/datetime-picker';
     NguiDatetimePickerModule
   ],
   providers: [EventsService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
