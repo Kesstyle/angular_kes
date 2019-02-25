@@ -2,11 +2,12 @@ import { Injectable, NgZone } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { KesEvent } from './../model/kesevent.model';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class EventsService {
 
-  baseUrl = 'http://192.168.0.104:8089/api/';
+  baseUrl = environment.baseApiUrl;
   private eventsList: KesEvent[] = new Array();
   private offset = new Date().getTimezoneOffset() / 60;
 
