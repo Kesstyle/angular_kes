@@ -31,7 +31,7 @@ import { environment } from '../environments/environment';
     CustomFormsModule,
     NgDatepickerModule,
     NguiDatetimePickerModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+ //   ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [EventsService],
   bootstrap: [AppComponent],

@@ -9,18 +9,18 @@ import { PushNotifyService } from './events/service/pushnotify.service'
 })
 export class AppComponent {
 
-    readonly VAPID_PUBLIC_KEY = 'BJ2u9V5GRmGk6BpszqacVSiKqF577lO-ppys0naDfww-tKe7-7qs-vrTe_ipTo4oTNPQZnlUu1jHCoHm_oU7Fe0';
+    // readonly VAPID_PUBLIC_KEY = 'BJ2u9V5GRmGk6BpszqacVSiKqF577lO-ppys0naDfww-tKe7-7qs-vrTe_ipTo4oTNPQZnlUu1jHCoHm_oU7Fe0';
 
-    constructor(
-        private swPush: SwPush,
-        private pushNotifyService: PushNotifyService) {}
+    // constructor(
+    //     private swPush: SwPush,
+    //     private pushNotifyService: PushNotifyService) {}
 
-    subscribeToNotifications() {
+    // subscribeToNotifications() {
 
-        this.swPush.requestSubscription({
-            serverPublicKey: this.VAPID_PUBLIC_KEY
-        })
-        .then(sub => this.pushNotifyService.addPushSubscriber(sub).subscribe())
-        .catch(err => console.error('Could not subscribe to notifications', err));
-    }
+    //     this.swPush.requestSubscription({
+    //         serverPublicKey: this.VAPID_PUBLIC_KEY
+    //     })
+    //     .then(sub => this.pushNotifyService.addPushSubscriber(sub).subscribe())
+    //     .catch(err => console.error('Could not subscribe to notifications', err));
+    // }
 }

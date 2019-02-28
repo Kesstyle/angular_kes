@@ -24,7 +24,8 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   selectedAll = false;
 
-  constructor(private eventsService: EventsService, private pushService: PushNotifyService) {   }
+//  constructor(private eventsService: EventsService, private pushService: PushNotifyService) {   }
+  constructor(private eventsService: EventsService) {   }
 
   ngOnInit() {
       this.refreshAddFormDate();
@@ -40,7 +41,7 @@ export class EventsComponent implements OnInit, AfterViewInit {
               schedule: new Schedule(this.listDatesSchedule) });
             this.clearAll();
         }
-        this.pushService.pushUsers();
+   //     this.pushService.pushUsers();
   }
 
   updateItem(item: KesEvent) {
