@@ -3,6 +3,7 @@ import { KesEvent } from './model/';
 import { EventsService } from './service/events.service';
 import { Observable } from 'rxjs';
 import { Schedule } from './model/schedule.model';
+import { PushNotifyService } from './service/pushnotify.service';
 
 @Component({
   selector: 'app-events',
@@ -23,7 +24,7 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   selectedAll = false;
 
-  constructor(private eventsService: EventsService) {   }
+  constructor(private eventsService: EventsService, private pushService: PushNotifyService) {   }
 
   ngOnInit() {
       this.refreshAddFormDate();
@@ -39,6 +40,7 @@ export class EventsComponent implements OnInit, AfterViewInit {
               schedule: new Schedule(this.listDatesSchedule) });
             this.clearAll();
         }
+        this.pushService.pushUsers();
   }
 
   updateItem(item: KesEvent) {
