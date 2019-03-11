@@ -5,6 +5,13 @@ tr.done:nth-child(even) {
     background-color: #0d0
 }
 
+tr.past:nth-child(odd) {
+    background-color: #f00
+}
+tr.past:nth-child(even) {
+    background-color: #f00
+}
+
 select.selectMargined {
     margin-right: 2mm;
     margin-left: 2mm;

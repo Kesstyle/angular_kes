@@ -82,14 +82,19 @@ export class EventsService {
                 const dateToSet = new Date(json['dateExpire']);
                 dateToSet.setHours(dateToSet.getHours() + this.offset);
                 this.eventsList.push(new KesEvent(json['id'], json['name'],
-                    json['done'], dateToSet, new Schedule([])));
+                    json['done'], dateToSet, new Schedule([]), this.isInPast(dateToSet)));
             }
           this.eventsList.sort((a, b) => this.eventsComparator(a, b));
+          this.eventsList.forEach(e => e.inPast = this.isInPast(e.dateExpire));
           observer.next(this.eventsList);
         });
       eventSource.onerror = (error) => observer.error('eventSource.onerror: ' + error);
       return () => eventSource.close();
     });
+    }
+
+    isInPast(date: Date) {
+        return new Date() > date;
     }
 
     private eventsComparator(a: KesEvent , b: KesEvent) {
