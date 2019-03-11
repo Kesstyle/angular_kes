@@ -14,6 +14,8 @@ import { NgDatepickerModule } from 'ng2-datepicker';
 import { NguiDatetimePickerModule } from '@ngui/datetime-picker';
 import { DatePipe } from './events/events.pipe';
 import * as moment from 'moment';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import * as moment from 'moment';
     HttpModule,
     CustomFormsModule,
     NgDatepickerModule,
-    NguiDatetimePickerModule
+    NguiDatetimePickerModule,
+ //   ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [EventsService],
   bootstrap: [AppComponent],
