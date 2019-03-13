@@ -14,7 +14,7 @@ import { NgDatepickerModule } from 'ng2-datepicker';
 import { NguiDatetimePickerModule } from '@ngui/datetime-picker';
 import { DatePipe } from './events/events.pipe';
 import * as moment from 'moment';
-import { ServiceWorkerModule } from '@angular/service-worker';
+//import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
 @NgModule({

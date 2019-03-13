@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, ViewChild, ElementRef, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
-import { KesEvent } from './model/';
+import { KesEvent, Person } from './model/';
 import { EventsService } from './service/events.service';
 import { Observable } from 'rxjs';
 import { Schedule } from './model/schedule.model';
@@ -15,12 +15,15 @@ export class EventsComponent implements OnInit, AfterViewInit {
     @Input() nameNew: string;
     @Input() dateFullNew: Date;
     @Input() dateSchedule: Date;
+    @Input() personAssignee: Person;
 
     listDatesSchedule: Date[] = [];
 
     @ViewChildren('donecheckbox') doneCheckbox: QueryList<ElementRef>;
 
     list: Observable<KesEvent[]>;
+    persons: Person[] = [];
+
 
   selectedAll = false;
 
@@ -28,6 +31,11 @@ export class EventsComponent implements OnInit, AfterViewInit {
   constructor(private eventsService: EventsService) {   }
 
   ngOnInit() {
+      this.persons.push(new Person('0', 'Все пользователи'));
+      this.persons.push(new Person('1', 'Серёжа'));
+      this.persons.push(new Person('2', 'Аня'));
+      this.personAssignee = this.persons[0];
+
       this.refreshAddFormDate();
       this.getItems();
   }
@@ -46,6 +54,15 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   updateItem(item: KesEvent) {
       this.eventsService.updateItem(item);
+  }
+
+  updateItemCalendar(item: KesEvent) {
+    if (!item.ignoredFirstFire) {
+    console.log('ignored! ' + item.name);
+      item.ignoredFirstFire = true;
+    } else {
+      this.updateItem(item);
+    }
   }
 
   removeItem(id: string) {

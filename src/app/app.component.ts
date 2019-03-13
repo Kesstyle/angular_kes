@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {SwPush, SwUpdate} from '@angular/service-worker';
+//import {SwPush, SwUpdate} from '@angular/service-worker';
 import { PushNotifyService } from './events/service/pushnotify.service'
 
 @Component({

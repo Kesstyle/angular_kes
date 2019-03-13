@@ -10,15 +10,21 @@
     </div>
     <div class="panel">
         <div class="form-inline">
-            <div class="form-group col-md-10" style="margin: 3mm">
+            <div class="form-group col-md-9" style="margin: 3mm">
                 <div class="col-md-2">
                     <label>Описание: </label>
                     <input class="form-control" [(ngModel)]="nameNew" placeholder = "Описание события" />
                 </div>               
-                <div class="col-md-6">
+                <div class="col-md-2">
                     <label>Дата события: </label>
                     <input [(ngModel)]="dateFullNew" ngui-datetime-picker [close-on-select]="false"/>
                 </div>
+<!--                 <div class="col-md-2">
+                    <label>Для кого: </label>
+                    <select [(ngModel)]="personAssignee">
+                        <option *ngFor="let person of persons" [ngValue]="person">{{person.name}}</option>
+                    </select>
+                </div> -->
             </div>
             <br/>
             <div class="form-group col-md-8" style="margin: 3mm">
@@ -58,8 +64,7 @@
                 <tr *ngFor="let item of list | async; let index = index" [class.done]="item.done" [class.past]="item.inPast && !item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
                     <td><textarea cols="40" rows="3" [(ngModel)]="item.name" (change)="updateItem(item)"></textarea></td>
-                    <td><input [(ngModel)]="item.dateExpire" date-format="y" ngui-datetime-picker [close-on-select]="true"
-                       (ngModelChange)="updateItem(item)"/>
+                    <td><input [(ngModel)]="item.dateExpire" date-format="y" ngui-datetime-picker [close-on-select]="true" (ngModelChange)="updateItemCalendar(item)" />
                     {{ item.dateExpire | formatDate }}
                     </td>
                     <td><input #donecheckbox type="checkbox" [(checked)]="item.done" (change)="changeCheckboxState(item)" /></td>
