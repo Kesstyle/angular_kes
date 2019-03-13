@@ -27,7 +27,7 @@ export class EventsService {
   updateItem (event: KesEvent) {
     const dateToSet = event.dateExpire;
     dateToSet.setHours(dateToSet.getHours() - this.offset);
-    const body = {id: event.id, name: event.name, dateExpire: dateToSet, done: event.done};
+    const body = {id: event.id, name: event.name, dateExpire: dateToSet, done: event.done, userId: event.userId};
     return this.updateItemWithBody(body);
   }
 
@@ -73,6 +73,7 @@ export class EventsService {
                 this.eventsList.filter(e => e.id === id).forEach(e => {
                     e.name = json['name'];
                     e.done = json['done'];
+                    e.userId = json['userId'];
                     const dateToSet = new Date(json['dateExpire']);
                     dateToSet.setHours(dateToSet.getHours() + this.offset);
                     e.dateExpire = dateToSet;
@@ -81,7 +82,7 @@ export class EventsService {
                 const dateToSet = new Date(json['dateExpire']);
                 dateToSet.setHours(dateToSet.getHours() + this.offset);
                 this.eventsList.push(new KesEvent(json['id'], json['name'],
-                    json['done'], dateToSet, new Schedule([]), this.isInPast(dateToSet), false));
+                    json['done'], dateToSet, new Schedule([]), this.isInPast(dateToSet), json['userId'], false));
             }
           this.eventsList.sort((a, b) => this.eventsComparator(a, b));
           this.eventsList.forEach(e => e.inPast = this.isInPast(e.dateExpire));

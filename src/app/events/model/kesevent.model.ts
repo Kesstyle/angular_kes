@@ -2,5 +2,5 @@ import { Schedule } from './schedule.model';
 
 export class KesEvent {
     constructor(public id: string, public name: string, public done: boolean, public dateExpire: Date,
-        public notificationSchedule: Schedule, public inPast: boolean, public ignoredFirstFire: boolean) {}
+        public notificationSchedule: Schedule, public inPast: boolean, public userId: string, public ignoredFirstFire: boolean) {}
 }
