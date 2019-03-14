@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
-import { KesEvent } from './../model/kesevent.model';
+import { KesEvent, Person } from './../model/';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Schedule } from '../model/schedule.model';
@@ -10,6 +10,7 @@ export class EventsService {
 
   baseUrl = environment.baseApiUrl;
   private eventsList: KesEvent[] = new Array();
+  private personsList: Person[] = new Array();
   private offset = new Date().getTimezoneOffset() / 60;
 
   constructor(private http: Http, private zone: NgZone) {   }
@@ -52,12 +53,11 @@ export class EventsService {
         .subscribe(data => console.log('Deleted: ' + data));
   }
 
-
-   getItemsObservable () {
+  getItemsObservableAbstract (url: string) {
      this.eventsList = new Array();
 
      return Observable.create((observer) => {
-      const eventSource = new EventSource(`${this.baseUrl}events`);
+      const eventSource = new EventSource(url);
 
       eventSource.onmessage = (event) =>
         this.zone.run(() => {
@@ -90,6 +90,47 @@ export class EventsService {
         });
       eventSource.onerror = (error) => observer.error('eventSource.onerror: ' + error);
       return () => eventSource.close();
+    });
+  }
+
+   getItemsObservable () {
+     return this.getItemsObservableAbstract(`${this.baseUrl}events`);
+  }
+
+  getItemsObservableForUser (userId: string) {
+      if (userId === null || userId === 'null') {
+          return this.getItemsObservable();
+      }
+      return this.getItemsObservableAbstract(`${this.baseUrl}events?UID_H=` + userId);
+  }
+
+  getPersonsObservable () {
+     this.personsList = new Array();
+
+     return Observable.create((observer) => {
+      const personSource = new EventSource(`${this.baseUrl}users`);
+
+      personSource.onmessage = (person) =>
+        this.zone.run(() => {
+          const json = JSON.parse(person.data);
+          let id: string = json['userId'];
+            if (id.startsWith('--')) {
+                id = id.replace('--', '');
+                this.personsList = this.personsList.filter(e => {
+                    return e.id !== id;
+                });
+            } else if (id.startsWith('*')) {
+                id = id.replace('*', '');
+                this.personsList.filter(p => p.id === id).forEach(p => {
+                    p.name = json['name'];
+                });
+            } else {
+                this.personsList.push(new Person(json['userId'], json['name']));
+            }
+          observer.next(this.personsList);
+        });
+      personSource.onerror = (error) => observer.error('personSource.onerror: ' + error);
+      return () => personSource.close();
     });
     }
 

@@ -10,6 +10,15 @@
     </div>
     <div class="panel">
         <div class="form-inline">
+            <div class="form-group col-md-6" style="margin: 3mm">
+                <div class="col-md-2">
+                    <label>Чьи события: </label>
+                    <select (change)="onChangeUser($event)">
+                        <option [value]="defaultPerson.id">{{defaultPerson.name}}</option>
+                        <option *ngFor="let person of persons | async" [value]="person.id">{{person.name}}</option>
+                    </select>
+                </div>  
+            </div>
             <div class="form-group col-md-9" style="margin: 3mm">
                 <div class="col-md-2">
                     <label>Описание: </label>

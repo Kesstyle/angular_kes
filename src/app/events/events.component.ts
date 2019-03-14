@@ -22,7 +22,8 @@ export class EventsComponent implements OnInit, AfterViewInit {
     @ViewChildren('donecheckbox') doneCheckbox: QueryList<ElementRef>;
 
     list: Observable<KesEvent[]>;
-    persons: Person[] = [];
+    persons: Observable<Person[]>;
+    defaultPerson: Person;
 
 
   selectedAll = false;
@@ -31,13 +32,10 @@ export class EventsComponent implements OnInit, AfterViewInit {
   constructor(private eventsService: EventsService) {   }
 
   ngOnInit() {
-      this.persons.push(new Person('0', 'Все пользователи'));
-      this.persons.push(new Person('1', 'Серёжа'));
-      this.persons.push(new Person('2', 'Аня'));
-      this.personAssignee = this.persons[0];
-
+      this.defaultPerson = new Person(null, 'Все пользователи');
       this.refreshAddFormDate();
       this.getItems();
+      this.getPersons();
   }
 
   ngAfterViewInit() { }
@@ -65,6 +63,11 @@ export class EventsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onChangeUser(event: Event) {
+      let element = event.currentTarget as HTMLInputElement;
+      this.list = this.eventsService.getItemsObservableForUser(element.value);
+  }
+
   removeItem(id: string) {
     this.eventsService.removeItem(id);
   }
@@ -82,6 +85,10 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   getItems () {
     this.list = this.eventsService.getItemsObservable();
+  }
+
+  getPersons () {
+    this.persons = this.eventsService.getPersonsObservable();
   }
 
   addScheduleDate () {
