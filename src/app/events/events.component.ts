@@ -24,6 +24,7 @@ export class EventsComponent implements OnInit, AfterViewInit {
     list: Observable<KesEvent[]>;
     persons: Observable<Person[]>;
     defaultPerson: Person;
+    collapsedAddPanel = true;
     private defaultPersonName = 'Все пользователи';
     private selectedUser: string;
 
@@ -123,6 +124,10 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   removeScheduleDate (date: Date) {
     this.listDatesSchedule = this.listDatesSchedule.filter(d => !this.compareDatesPrecisionMinutes(d, date));
+  }
+
+  collapseAddPanel () {
+      this.collapsedAddPanel = !this.collapsedAddPanel;
   }
 
   private compareDatesPrecisionMinutes(date1: Date, date2: Date) {

@@ -5,11 +5,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 </head>
 <body ng-controller="purchaseController">
-    <div class="page-header">
-        <h1> Список событий </h1>
-    </div>
     <div class="panel">
-        <div class="form-inline">
             <div class="form-group col-md-6" style="margin: 3mm">
                 <div class="col-md-2">
                     <label>Пользователь: </label>
@@ -19,40 +15,44 @@
                     </select>
                 </div>  
             </div>
-            <div class="form-group col-md-9" style="margin: 3mm">
-                <div class="col-md-2">
-                    <label>Описание: </label>
-                    <input class="form-control" [(ngModel)]="nameNew" placeholder = "Описание события" />
-                </div>               
-                <div class="col-md-2">
-                    <label>Дата события: </label>
-                    <input [(ngModel)]="dateFullNew" ngui-datetime-picker [close-on-select]="false"/>
-                </div>
+            <div class="form-group col-md-6" style="margin: 3mm;">
+                <a (click)="collapseAddPanel()" style="padding-left: 15px;">Добавить новое событие</a>
             </div>
-            <br/>
-            <div class="form-group col-md-8" style="margin: 3mm">
-                <div class="col-md-2">
-                    <label>Уведомить: </label>
-                    <input [(ngModel)]="dateSchedule" ngui-datetime-picker [close-on-select]="false"/>  
+            <div class="form-inline" [class.collapse]='collapsedAddPanel'>
+                <div class="form-group col-md-9" style="margin: 3mm">
+                    <div class="col-md-2">
+                        <label>Описание: </label>
+                        <input class="form-control" [(ngModel)]="nameNew" placeholder = "Описание события" />
+                    </div>               
+                    <div class="col-md-2">
+                        <label>Дата события: </label>
+                        <input [(ngModel)]="dateFullNew" ngui-datetime-picker [close-on-select]="false"/>
+                    </div>
                 </div>
-                <div class="col-md-6" style="margin-top: 6mm">
-                    <a><img src="/assets/images/plus.png" width="20" height="20" (click)="addScheduleDate()"/></a>
-                </div>                 
-            </div>
-            <div class="form-group col-md-6" style="margin: 3mm">
-                <ul>
-                    <li *ngFor="let schDate of listDatesSchedule">
-                        {{schDate | formatDate}}<a><img src="/assets/images/minus.png" width="20" height="20" (click)="removeScheduleDate(schDate)"/></a>
-                    </li>
-                </ul>
-            </div>
-            <br/>
-            <div class="form-group col-md-10" style="margin: 3mm">
-                <div class="col-md-8">
-                    <button class="btn btn-default" (click)="addItem()">Добавить</button>
+                <br/>
+                <div class="form-group col-md-8" style="margin: 3mm">
+                    <div class="col-md-2">
+                        <label>Уведомить: </label>
+                        <input [(ngModel)]="dateSchedule" ngui-datetime-picker [close-on-select]="false"/>  
+                    </div>
+                    <div class="col-md-6" style="margin-top: 6mm">
+                        <a><img src="/assets/images/plus.png" width="20" height="20" (click)="addScheduleDate()"/></a>
+                    </div>                 
                 </div>
+                <div class="form-group col-md-6" style="margin: 3mm">
+                    <ul>
+                        <li *ngFor="let schDate of listDatesSchedule">
+                            {{schDate | formatDate}}<a><img src="/assets/images/minus.png" width="20" height="20" (click)="removeScheduleDate(schDate)"/></a>
+                        </li>
+                    </ul>
+                </div>
+                <br/>
+                <div class="form-group col-md-10" style="margin: 3mm">
+                    <div class="col-md-8">
+                        <button class="btn btn-default" (click)="addItem()">Добавить</button>
+                    </div>
+                </div>  
             </div>  
-        </div>  
         <table class="table table-striped">
             <thead>
                 <tr>
