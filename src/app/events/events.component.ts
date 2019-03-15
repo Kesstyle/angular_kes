@@ -24,6 +24,8 @@ export class EventsComponent implements OnInit, AfterViewInit {
     list: Observable<KesEvent[]>;
     persons: Observable<Person[]>;
     defaultPerson: Person;
+    private defaultPersonName = 'Все пользователи';
+    private selectedUser: string;
 
 
   selectedAll = false;
@@ -32,7 +34,7 @@ export class EventsComponent implements OnInit, AfterViewInit {
   constructor(private eventsService: EventsService) {   }
 
   ngOnInit() {
-      this.defaultPerson = new Person(null, 'Все пользователи');
+      this.defaultPerson = new Person(null, this.defaultPersonName);
       this.refreshAddFormDate();
       this.getItems();
       this.getPersons();
@@ -44,10 +46,9 @@ export class EventsComponent implements OnInit, AfterViewInit {
         if (this.nameNew !== '') {
             this.dateFullNew.setHours(this.dateFullNew.getHours() - this.dateFullNew.getTimezoneOffset() / 60);
             this.eventsService.addItemWithBody({name: this.nameNew, dateExpire: this.dateFullNew, done: false,
-              schedule: new Schedule(this.listDatesSchedule) });
+              userId: this.selectedUser,  schedule: new Schedule(this.listDatesSchedule) });
             this.clearAll();
         }
-   //     this.pushService.pushUsers();
   }
 
   updateItem(item: KesEvent) {
@@ -63,9 +64,25 @@ export class EventsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  updateItemUser(item: KesEvent) {
+      if (item.userId === 'null') {
+          item.userId = null;
+      }
+      this.updateItem(item);
+  }
+
   onChangeUser(event: Event) {
       let element = event.currentTarget as HTMLInputElement;
+      this.selectedUser = element.value;
       this.list = this.eventsService.getItemsObservableForUser(element.value);
+  }
+
+  getUserName(userId: string) {
+    if (userId === null || userId === 'null') {
+        return this.defaultPersonName;
+    }
+    console.log('Retrieve for ' + userId + ' : ' + this.eventsService.userMap.get(userId));
+    return this.eventsService.userMap.get(userId);
   }
 
   removeItem(id: string) {
@@ -89,6 +106,10 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   getPersons () {
     this.persons = this.eventsService.getPersonsObservable();
+  }
+
+  getCurrentPersons () {
+      return this.eventsService.userMap;
   }
 
   addScheduleDate () {

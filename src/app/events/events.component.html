@@ -12,7 +12,7 @@
         <div class="form-inline">
             <div class="form-group col-md-6" style="margin: 3mm">
                 <div class="col-md-2">
-                    <label>Чьи события: </label>
+                    <label>Пользователь: </label>
                     <select (change)="onChangeUser($event)">
                         <option [value]="defaultPerson.id">{{defaultPerson.name}}</option>
                         <option *ngFor="let person of persons | async" [value]="person.id">{{person.name}}</option>
@@ -28,12 +28,6 @@
                     <label>Дата события: </label>
                     <input [(ngModel)]="dateFullNew" ngui-datetime-picker [close-on-select]="false"/>
                 </div>
-<!--                 <div class="col-md-2">
-                    <label>Для кого: </label>
-                    <select [(ngModel)]="personAssignee">
-                        <option *ngFor="let person of persons" [ngValue]="person">{{person.name}}</option>
-                    </select>
-                </div> -->
             </div>
             <br/>
             <div class="form-group col-md-8" style="margin: 3mm">
@@ -63,8 +57,8 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th></th>
                     <th>Событие</th>
+                    <th>Пользователь</th>
                     <th>Ожидаемая дата</th>
                     <th>Произошло?<br>
                         Выбрать все <input type="checkbox" [(checked)]="selectedAll" (change)="changeSelectAllCheckboxState()" /></th>
@@ -73,8 +67,12 @@
             <tbody>
                 <tr *ngFor="let item of list | async; let index = index" [class.done]="item.done" [class.past]="item.inPast && !item.done">
                     <td><input type="hidden" [ngModel]="item.id"/></td>
-                    <td><input type="hidden" [ngModel]="item.userId"/></td>
+                    <!-- <td><input type="text" [ngModel]="item.userId"/></td> -->
                     <td><textarea cols="40" rows="3" [(ngModel)]="item.name" (change)="updateItem(item)"></textarea></td>
+                    <select (change)="updateItemUser(item)" [(ngModel)]="item.userId" style="margin-top: 10px">
+                        <option [value]="defaultPerson.id">{{defaultPerson.name}}</option>
+                        <option *ngFor="let person of getCurrentPersons() | keyvalue" [(ngValue)]="person.key">{{ person.value }}</option>
+                    </select>
                     <td><input [(ngModel)]="item.dateExpire" date-format="y" ngui-datetime-picker [close-on-select]="true" (ngModelChange)="updateItemCalendar(item)" />
                     {{ item.dateExpire | formatDate }}
                     </td>

@@ -12,11 +12,12 @@ export class EventsService {
   private eventsList: KesEvent[] = new Array();
   private personsList: Person[] = new Array();
   private offset = new Date().getTimezoneOffset() / 60;
+  userMap = new Map();
 
   constructor(private http: Http, private zone: NgZone) {   }
 
   addItem (event: KesEvent) {
-    const body = {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done};
+    const body = {id: event.id, name: event.name, dateExpire: event.dateExpire, done: event.done, userId: event.userId};
     return this.addItemWithBody(body);
   }
 
@@ -37,7 +38,7 @@ export class EventsService {
     events.forEach(event => {
         const dateToSet = event.dateExpire;
         dateToSet.setHours(dateToSet.getHours() - this.offset);
-        body = body + ',' + {id: event.id, name: event.name, dateExpire: dateToSet, done: event.done};
+        body = body + ',' + {id: event.id, name: event.name, dateExpire: dateToSet, done: event.done, userId: event.userId};
     });
     body = body + ']';
     return this.updateItemWithBody(body);
@@ -114,18 +115,24 @@ export class EventsService {
         this.zone.run(() => {
           const json = JSON.parse(person.data);
           let id: string = json['userId'];
+          const name: string = json['name'];
             if (id.startsWith('--')) {
                 id = id.replace('--', '');
                 this.personsList = this.personsList.filter(e => {
                     return e.id !== id;
                 });
+                this.userMap.delete(id);
             } else if (id.startsWith('*')) {
                 id = id.replace('*', '');
                 this.personsList.filter(p => p.id === id).forEach(p => {
-                    p.name = json['name'];
+                    p.name = name;
                 });
+                console.log('Updated to map: ' + id + ' ' + name);
+                this.userMap.set(id, name);
             } else {
-                this.personsList.push(new Person(json['userId'], json['name']));
+                this.userMap.set(id, name);
+                 console.log('Added to map: ' + id + ' ' + name);
+                this.personsList.push(new Person(id, name));
             }
           observer.next(this.personsList);
         });
