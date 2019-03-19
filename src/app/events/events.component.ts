@@ -36,6 +36,7 @@ export class EventsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
       this.defaultPerson = new Person(null, this.defaultPersonName);
+      this.selectedUser = null;
       this.refreshAddFormDate();
       this.getItems();
       this.getPersons();
@@ -75,6 +76,9 @@ export class EventsComponent implements OnInit, AfterViewInit {
   onChangeUser(event: Event) {
       let element = event.currentTarget as HTMLInputElement;
       this.selectedUser = element.value;
+      if (this.selectedUser === 'null') {
+          this.selectedUser = null;
+      }
       this.list = this.eventsService.getItemsObservableForUser(element.value);
   }
 
